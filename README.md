@@ -1,11 +1,13 @@
-# Sneaker v2
+# Sneaker Androidx
 A lightweight Android library for customizable alerts
+
+I update this lib to androidx. Implement the new dependence to your project. Please click Star if you like the updated lib.
 
 ![](https://github.com/Hamadakram/Sneaker/blob/master/art/Sneaker.png?raw=true)
 ## Download
 Grab via Gradle:
 ```kotlin
-implementation 'com.irozon.sneaker:sneaker:2.0.0'
+implementation 'com.github.StevenUltraman:Sneaker:v1.0'
 ```
 ## Usage
 
