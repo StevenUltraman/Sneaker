@@ -1,21 +1,21 @@
 package com.irozon.sneaker
 
 import android.app.Activity
-import android.arch.lifecycle.LifecycleObserver
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
-import android.support.annotation.DrawableRes
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleObserver
 
 import com.irozon.sneaker.interfaces.OnSneakerClickListener
 import com.irozon.sneaker.interfaces.OnSneakerDismissListener
@@ -92,15 +92,16 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
 
     private fun setTargetView(targetView: Any) {
         this.targetView =
-                when (targetView) {
-                    is Activity -> {
-                        isActivity = true
-                        targetView.window?.decorView as ViewGroup
-                    }
-                    is Fragment -> targetView.view as ViewGroup
-                    is ViewGroup -> targetView
-                    else -> null
+            when (targetView) {
+                is Activity -> {
+                    isActivity = true
+                    targetView.window?.decorView as ViewGroup
                 }
+
+                is Fragment -> targetView.view as ViewGroup
+                is ViewGroup -> targetView
+                else -> null
+            }
     }
 
     /**
@@ -410,15 +411,15 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
      */
     private fun sneakView() {
         // Main layout
-        targetView?.let {
+        targetView?.let { tv ->
             val layoutParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    if (mHeight == DEFAULT_VALUE && isActivity)
-                        Utils.getStatusBarHeight(it) + Utils.convertToDp(context, 56f)
-                    else if (mHeight == DEFAULT_VALUE && !isActivity)
-                        Utils.convertToDp(context, 56f)
-                    else
-                        Utils.convertToDp(context, mHeight.toFloat())
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                if (mHeight == DEFAULT_VALUE && isActivity)
+                    Utils.getStatusBarHeight(tv) + Utils.convertToDp(context, 56f)
+                else if (mHeight == DEFAULT_VALUE && !isActivity)
+                    Utils.convertToDp(context, 56f)
+                else
+                    Utils.convertToDp(context, mHeight.toFloat())
             )
             if (mMargin != DEFAULT_VALUE) {
                 val margin = Utils.convertToDp(context, mMargin.toFloat())
@@ -432,23 +433,19 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
                 this.layoutParams = layoutParams
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                setPadding(46, if (isActivity) Utils.getStatusBarHeight(it) else 0, 46, 0)
+                setPadding(46, if (isActivity) Utils.getStatusBarHeight(tv) else 0, 46, 0)
                 setBackground(mBackgroundColor, mCornerRadius)
                 setIcon(mIconDrawable, mIsCircular, Utils.convertToDp(context, mIconSize.toFloat()), mIconColorFilterColor)
                 setTextContent(mTitle, mTitleColor, mMessage, mMessageColor, mTypeFace)
                 setOnClickListener(this@Sneaker)
             }
-            removeExistingSneakerView(it)
-            it.addView(sneakerView, 0)
+            removeExistingSneakerView(tv)
+            tv.addView(sneakerView, 0)
 
             sneakerView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_show))
             if (mAutoHide) {
-                val handler = Handler()
-                handler.removeCallbacks(null)
-                handler.postDelayed({
-                    removeView(sneakerView)
-                    mDismissListener?.onDismiss()
-                }, mDuration.toLong())
+                tv.removeCallbacks(clearViewRunnable)
+                tv.postDelayed(clearViewRunnable, mDuration.toLong())
             }
         }
     }
@@ -456,21 +453,22 @@ class Sneaker(private var context: Context) : View.OnClickListener, LifecycleObs
     fun sneakCustom(layout: View): Sneaker {
         sneakerView.setCustomView(layout)
 
-        targetView?.let {
-            removeExistingSneakerView(it)
-            it.addView(sneakerView)
+        targetView?.let { vg ->
+            removeExistingSneakerView(vg)
+            vg.addView(sneakerView)
 
             sneakerView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_show))
             if (mAutoHide) {
-                val handler = Handler()
-                handler.removeCallbacks(null)
-                handler.postDelayed({
-                    removeView(sneakerView)
-                    mDismissListener?.onDismiss()
-                }, mDuration.toLong())
+                vg.removeCallbacks(clearViewRunnable)
+                vg.postDelayed(clearViewRunnable, mDuration.toLong())
             }
         }
         return this
+    }
+
+    private val clearViewRunnable = Runnable {
+        targetView?.removeView(sneakerView)
+        mDismissListener?.onDismiss()
     }
 
     /**

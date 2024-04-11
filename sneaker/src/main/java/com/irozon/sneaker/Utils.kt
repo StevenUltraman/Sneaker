@@ -1,14 +1,10 @@
 package com.irozon.sneaker
 
-import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
-import android.support.v4.content.ContextCompat
-import android.view.View
 import android.view.ViewGroup
-import android.view.Window
+import androidx.core.content.ContextCompat
 
 /**
  * Created by hammad.akram on 2/27/18.

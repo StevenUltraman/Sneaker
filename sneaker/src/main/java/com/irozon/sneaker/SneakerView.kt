@@ -3,12 +3,12 @@ package com.irozon.sneaker
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.AppCompatImageView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import com.irozon.sneaker.Utils.customView
 import com.irozon.sneaker.widget.RoundedImageView
 
@@ -23,9 +23,7 @@ internal class SneakerView(context: Context?) : LinearLayout(context) {
 
     fun setIcon(icon: Drawable?, isCircular: Boolean, iconSize: Int, colorFilter: Int) {
         icon?.let {
-            val ivIcon =
-                    if (!isCircular) AppCompatImageView(context)
-                    else RoundedImageView(context)
+            val ivIcon = if (!isCircular) AppCompatImageView(context) else RoundedImageView(context)
             ivIcon.layoutParams = LayoutParams(iconSize, iconSize)
             ivIcon.setImageDrawable(it)
             ivIcon.isClickable = false

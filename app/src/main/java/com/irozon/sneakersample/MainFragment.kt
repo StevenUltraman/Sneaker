@@ -1,18 +1,17 @@
 package com.irozon.sneakersample
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.irozon.sneaker.Sneaker
-import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment() {
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
@@ -20,12 +19,12 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btShowWarning.setOnClickListener {
+        view.findViewById<View>(R.id.btShowWarning).setOnClickListener {
             Sneaker.with(this)
-                    .setTitle("Warning!!")
-                    .setCornerRadius(5, 5)
-                    .setMessage("This is the warning message")
-                    .sneakWarning()
+                .setTitle("Warning!!")
+                .setCornerRadius(5, 5)
+                .setMessage("This is the warning message")
+                .sneakWarning()
         }
     }
 }
